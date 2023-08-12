@@ -23,7 +23,7 @@ const formatFiatValue = (value: string, currency: string): string => {
 
 function Balances({ balances }: { balances: TokenBalance[] }): JSX.Element {
     return (
-        <Table
+        <Table 
             headers={[
                 { id: 'col1', label: 'Asset' },
                 { id: 'col2', label: 'Amount' },
@@ -31,14 +31,14 @@ function Balances({ balances }: { balances: TokenBalance[] }): JSX.Element {
             ]}
             rows={balances.map((item: TokenBalance, index: number) => {
                 const token = item.tokenInfo.type === 'NATIVE_TOKEN' ? ethToken : item.tokenInfo;
-
+                console.log(token)
                 return {
                     id: `row${index}`,
                     cells: [
                         {
                             content: (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src={token.logoUri || undefined} alt={`${token.symbol} Logo`} />
+                                    <img src={token.logoUri || undefined} alt={`${token.symbol} Logo`} width="24px" />
                                     {token.name}
                                 </div>
                             ),

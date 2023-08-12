@@ -22,7 +22,7 @@ const SafeApp = (): React.ReactElement => {
   const { sdk, safe } = useSafeAppsSDK();
   const [balances] = useSafeBalances(sdk);
   const [recipient, setRecipient] = React.useState('');
-
+  const [newAddress, setNewAddress] = React.useState<any>(null)
   const handleTransfer = async (): Promise<void> => {
     const safeAddress = safe.safeAddress
     const provider = new ethers.providers.JsonRpcProvider("https://eth-goerli.g.alchemy.com/v2/ev5UT9SghDasYMQqBwAgKCm0axotZVAi")
@@ -59,6 +59,7 @@ const SafeApp = (): React.ReactElement => {
     })
     const address = await wallet.getAddress()
     console.log("New wallet address", address)
+    setNewAddress(address)
     await fundWallet(auth, wallet, 0.01)
     await wallet.create(auth, await auth.getAddress())
     console.log(wallet)
@@ -81,22 +82,18 @@ const SafeApp = (): React.ReactElement => {
 
   return (
     <Container>
-      <Title size="sm">Safe: {safe.safeAddress}</Title>
+      <Title size="sm" className='text-white'>Safe: {safe.safeAddress}</Title>
       <BalancesTable balances={balances} />
-
-      <TextField
-        label="Recipient"
-        onChange={(e) => {
-          setRecipient(e.target.value);
-        }}
-        value={recipient}
-      />
       <Button size="lg" color="primary" onClick={handleTransfer}>
-        Send the assets
+        Migrate to Fun Wallet
       </Button>
-      <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+      {newAddress &&
+
+        <Title size="sm" className='text-white'>Fun Wallet Address:  <a className='text-blue-50 underline' target="_blank"  href={`https://goerli.etherscan.io/address/${newAddress}`}>{newAddress}</a>
+        </Title>
+
+      }
+
     </Container>
   );
 };
