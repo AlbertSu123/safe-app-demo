@@ -6,8 +6,7 @@ import { useSafeBalances } from './hooks/useSafeBalances';
 import BalancesTable from './components/BalancesTable';
 import { getTransferTransaction } from "./apis/transfers";
 import { ethers } from 'ethers';
-// import { FunWallet } from "@fun-xyz/core";
-// import { keccak256, toBytes } from "viem";
+import { Auth, FunWallet, User, configureEnvironment, fundWallet, randomBytes } from '@fun-xyz/core'
 
 const Container = styled.div`
   padding: 1rem;
@@ -41,12 +40,26 @@ const SafeApp = (): React.ReactElement => {
       "type": "function"
     }], provider)
     const owners = await safeContract.getOwners()
-    console.log(owners)
-    // const wallet = new FunWallet({
-    //   users: [{ userId: owners[0] }],
-    //   uniqueId: keccak256(toBytes(Math.ceil(Math.random() * 100000)))
-    // })
-    // console.log(wallet)
+    console.log("Owners", owners)
+    const auth = new Auth({ privateKey: '0x9097b7693d3c8d027238561c33fa9c79faa9d2d7845d82e4208164db122f687d' })
+
+    await configureEnvironment({
+      chain: 5,
+      apiKey: "g2K4RcTBXe7ni54JUS2UjambCHaIEWEWQ3mMunC6"
+    })
+    const users: User[] = []
+    for (let i = 0; i < owners.length; i++) {
+      users.push({ userId: owners[i] })
+    }
+    const wallet = new FunWallet({
+      users: users,
+      uniqueId: randomBytes(32)
+    })
+    const address = await wallet.getAddress()
+    console.log("New wallet address", address)
+    await fundWallet(auth, wallet, 0.1)
+    await wallet.create(auth, await auth.getAddress())
+    console.log(wallet)
     const transactions = balances.map((balance) => getTransferTransaction(balance, recipient));
 
     const { safeTxHash } = await sdk.txs.send({ txs: transactions });
