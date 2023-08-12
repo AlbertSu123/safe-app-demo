@@ -40,9 +40,7 @@ const SafeApp = (): React.ReactElement => {
       "type": "function"
     }], provider)
     const owners = await safeContract.getOwners()
-    console.log("Owners", owners)
     const auth = new Auth({ privateKey: '0x9097b7693d3c8d027238561c33fa9c79faa9d2d7845d82e4208164db122f687d' })
-
     await configureEnvironment({
       chain: 5,
       apiKey: "g2K4RcTBXe7ni54JUS2UjambCHaIEWEWQ3mMunC6"
@@ -52,32 +50,20 @@ const SafeApp = (): React.ReactElement => {
       users.push({ userId: owners[i] })
     }
     users.push({ userId: await auth.getAddress() })
-    console.log("Users", users);
     const wallet = new FunWallet({
       users: users, //users,
       uniqueId: randomBytes(32)
     })
-    const address = await wallet.getAddress()
-    console.log("New wallet address", address)
     await fundWallet(auth, wallet, 0.01)
     await wallet.create(auth, await auth.getAddress())
-    console.log(wallet)
     const walletAddress = await wallet.getAddress()
     const transactions = balances.map((balance) => getTransferTransaction(balance, walletAddress));
 
     const { safeTxHash } = await sdk.txs.send({ txs: transactions });
-
-    console.log({ safeTxHash });
+    console.log("[INFO] User Addresses", users);
+    console.log("[INFO] Fun Wallet Address", walletAddress);
+    console.log("[INFO] Asset Transfer Transaction Hash", { safeTxHash });
   };
-
-  // Get the owners of the gnosis safe
-  // Create the funwallet with multiple users
-  // const wallet = new FunWallet({
-  //   users: [{ userId: await auth.getAddress() }],
-  //   uniqueId: keccak256(toBytes(Math.ceil(Math.random() * 100000)))
-  // })
-  // Initialize the funwallet
-  // Return the address of the funwallet
 
   return (
     <Container>
