@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom'
 import { ThemeProvider } from 'styled-components'
 import { theme, Loader, Title } from '@gnosis.pm/safe-react-components'
 import SafeProvider from '@gnosis.pm/safe-apps-react-sdk'
-
-import GlobalStyle from './GlobalStyle'
+// import GlobalStyle from './GlobalStyle'
+import "./index.css"
 import App from './App'
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
+      {/* <GlobalStyle /> */}
       <SafeProvider
         loader={
           <>
