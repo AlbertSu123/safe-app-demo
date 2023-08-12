@@ -51,13 +51,14 @@ const SafeApp = (): React.ReactElement => {
     for (let i = 0; i < owners.length; i++) {
       users.push({ userId: owners[i] })
     }
+    console.log("Users", users);
     const wallet = new FunWallet({
-      users: users,
+      users: [{ userId: await auth.getUserId() }, { userId: "0x6b1c176436277a91E1841b93cF83e63491600f09" }], //users,
       uniqueId: randomBytes(32)
     })
     const address = await wallet.getAddress()
     console.log("New wallet address", address)
-    await fundWallet(auth, wallet, 0.1)
+    await fundWallet(auth, wallet, 0.01)
     await wallet.create(auth, await auth.getAddress())
     console.log(wallet)
     const transactions = balances.map((balance) => getTransferTransaction(balance, recipient));
